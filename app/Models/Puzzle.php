@@ -73,6 +73,33 @@ class Puzzle extends Model {
         }
     }
     
+    public function helper_squares(){
+        $helper_squares = PuzzleHelperSquare::leftjoin('puzzle_helper_square_options', 'puzzle_helper_square_options.puzzle_helper_square_id', '=', 'puzzle_helper_squares.id')
+            ->where('puzzle_id', $this->id)
+            ->selectRaw('row', 'col', 'score', 'letter')
+            ->orderBy('col')
+            ->orderBy('row')
+            ->get();
+            
+        $ret = array();
+        for($i = 0; $i < count($helper_squares); $i++){
+            $hs = $helper_squares[$i++];
+            if (isset($ret[$hs->row.'-'.$hs->col])){
+                $ret[$hs->row.'-'.$hs->col][] = array(
+                    'score' => $hs->score,
+                    'letter' => $hs->letter,
+                );
+            }else{
+                $ret[$hs->row.'-'.$hs->col] = array(
+                    array(
+                        'score' => $hs->score,
+                        'letter' => $hs->letter,
+                    ),
+                );
+            }
+        }
+    }
+    
     public function puzzle_template(){
         return $this->belongsTo(PuzzleTemplate::class);
     }
@@ -111,6 +138,23 @@ class Puzzle extends Model {
         }
         
         return compact('impossibles', 'problems');
+    }
+    
+    public function calculatePuzzleHelperSquares(){
+        $pt = $this->puzzle_template;
+        $blackSquares = $pt->blackSquares();
+        
+        $helperSquares = $this->helper_squares();
+        
+        for($row = 1; $row <= $pt->height; $row++){
+            for($col = 1; $col <= $pt->width; $col++){
+                if (!in_array($row.'-'.$col, $blackSquares)){
+                    if ($puzzle_squares[$row.'-'.$col]['letter'] == ''){
+                        
+                    }
+                }
+            }
+        }
     }
     
     public function activate($sure = false){
