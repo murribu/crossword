@@ -1,5 +1,5 @@
 materialAdmin
-    .controller('puzzlesCtrl', function($scope, $location, puzzleService, growlService) {
+    .controller('puzzlesCtrl', function($scope, $location, puzzleService, growlService, errorFactory) {
         var self = this;
         self.puzzles = [];
         self.pageSize = 20;
@@ -14,10 +14,14 @@ materialAdmin
         if ($location.path().substr(0,24) == '/puzzles/incomplete-list'){
             puzzleService.getIncompletePuzzles().success(function(d){
                 self.puzzles = d;
+            }).error(function(data, code){
+                errorFactory.handleErrors(data, code);
             });
         }else if($location.path().substr(0,13) == '/puzzles/list'){
             puzzleService.getPuzzles().success(function(d){
                 self.puzzles = d;
+            }).error(function(data, code){
+                errorFactory.handleErrors(data, code);
             });
         }
         

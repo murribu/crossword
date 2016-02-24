@@ -1,5 +1,5 @@
 materialAdmin
-    .controller('puzzleTemplateCtrl', function($scope, $location, $stateParams, $timeout, puzzleService, growlService) {
+    .controller('puzzleTemplateCtrl', function($scope, $location, $stateParams, $timeout, puzzleService, growlService, errorFactory) {
         var self = this;
         self.name = '';
         self.username = '';

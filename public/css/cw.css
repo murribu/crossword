@@ -9,28 +9,28 @@
 .puzzleContainer #clue{
     width: 400px;
 }
-.puzzle{
+.puzzle, .puzzle-solve{
     text-align: center;
     padding:5px 5px 50px;
 }
-.puzzle table{
+.puzzle table, .puzzle-solve table{
     margin: 0 auto;
 }
-.puzzle table td{
+.puzzle table td, .puzzle-solve table td{
     border:1px solid black;
     width:25px;
     height:25px;
     position:relative;
 }
-.puzzle table td div{
+.puzzle table td div, .puzzle-solve table td div{
     text-transform: uppercase;
     text-align: center;
     font-size:larger;
 }
-.puzzle table td.black, .abbr-puzzle-square.black{
+.puzzle table td.black, .puzzle-solve table td.black, .abbr-puzzle-square.black{
     background-color:black;
 }
-.puzzle table td.clue::before, .abbr-puzzle-square.clue::before{
+.puzzle table td.clue::before, .puzzle-solve table td.clue::before, .abbr-puzzle-square.clue::before{
     content: attr(data-clue-number);
     font-size: 9px;
     position: absolute;
@@ -40,10 +40,10 @@
 .abbr-puzzle-square.clue.small::before{
     font-size: 6px;
 }
-.puzzle table td.selected-word{
+.puzzle table td.selected-word, .puzzle-solve table td.selected-word{
     background-color:lightblue;
 }
-.puzzle table td.selected-letter{
+.puzzle table td.selected-letter, .puzzle-solve table td.selected-letter{
     background-color:lightgoldenrodyellow;
 }
 .puzzle table td.impossible{
@@ -77,8 +77,8 @@
 }
 .puzzle-edit-clues-container{
     float: left;
-    width: 200px;
-    top: -36px;
+    width: 190px;
+    top: -28px;
     left: 10px;
     position: relative;
     z-index:2;
@@ -94,6 +94,10 @@
     position:absolute;
     top: 15px;
     right: 15px;
+}
+.abbr-puzzle-outer-container{
+    height: 130px;
+    overflow: hidden;
 }
 .abbr-puzzle-container{
     width:90%;
@@ -113,4 +117,70 @@
     position:absolute;
     border-left: 1px solid black;
     border-bottom: 1px solid black;
+}
+.puzzle-card-body{
+    min-height:530px;
+}
+.label-template-by{
+    position:absolute;
+    top: 0px;
+    right:2px;
+}
+.label-puzzle-by{
+    position:absolute;
+    top: 15px;
+    right:2px;
+}
+.card-header h2{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    max-width: 60%;
+}
+@media (max-width:550px){
+    .puzzleContainer{
+        position: relative;
+    }
+    .puzzle-edit-clues-container{
+        position: relative;
+        top: -63px;
+    }
+}
+@media (max-width:800px){
+    body #content {
+        padding: 0px 0 !important;
+        margin-top: -17px !important;
+    }
+    #header, #loading-bar .bar {
+        height:38px;
+    }
+    #sidebar{
+        top: 38px;
+    height: calc(100% - 38px);
+    }
+    .header-inner{
+        padding: 2px 0;
+    }
+    #loading-bar-spinner {
+        top:25px;
+    }
+    .puzzle-card-body{
+        min-height:530px;
+    }
+    .card-puzzle-solve{
+        height: calc(100% - 51px);
+    }
+    header .top-menu .dropdown{
+        display:none;
+    }
+    .puzzle-edit-clues-container > div{
+        max-height: 200px;
+        overflow-y: scroll;
+    }
+    #menu-trigger:before {
+        top: 4px;
+        left: 14px;
+        width: 29px;
+        height: 29px;
+    }
 }

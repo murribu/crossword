@@ -48,7 +48,7 @@
                         <td>{{p.width}}</td>
                         <td>{{p.height}}</td>
                         <td><a href="/users/{{p.username}}">{{p.owner}}</a></td>
-                        <td>{{(p.timestamp_utc*1000) | date:'MMM d, yyyy h:mm a'}}</td>
+                        <td>{{p.created | date:'MMM d, yyyy h:mm a'}}</td>
                     </tr>
                     <tr ng-hide="(pctrl.puzzles | filter:pctrl.filterResults).length > 0"><td colspan="5">No results. Check your filters - You may be filtering all of them out.</td></tr>
                 </table>

@@ -157,7 +157,7 @@ class Puzzle extends Model {
         }
     }
     
-    public function activate($sure = false){
+    public function activate($user, $sure = false){
         $missing_clues = array();
         $missing_clues_for_one_letter_words = array();
         $missing_letters = array();
@@ -203,6 +203,39 @@ class Puzzle extends Model {
                             $missing_clues[] = $ordinal.' down';
                         }
                     }
+                    //find word
+                    $word = "";
+                    for($word_row = $row; $word_row <= $pt->height && $squares[$word_row.'-'.$col]['square_type'] != 'black'; $word_row++){
+                        $word .= $squares[$word_row.'-'.$col]['letter'];
+                    }
+                    $word_db = Word::where('word', $word)->first();
+                    if (!$word_db){
+                        $word_db = new Word;
+                        $word_db->word = $word;
+                        $word_db->length = strlen($word);
+                        $word_db->user_id = $user->id;
+                        $word_db->timestamp_utc = time();
+                        $word_db->save();
+                        for($i = 0; $i < strlen($word); $i++){
+                            $letter = new Letter;
+                            $letter->letter = substr($word, $i, 1);
+                            $letter->word_id = $word_db->id;
+                            $letter->ordinal = $i+1;
+                            $letter->save();
+                        }
+                    }
+                    if ($found_clue){
+                        $clue_available = ClueAvailable::where('word_id', $word_db->id)
+                            ->where('clue', $found_clue->clue)
+                            ->first();
+                        if (!$clue_available){
+                            $clue_available = new ClueAvailable;
+                            $clue_available->word_id = $word_db->id;
+                            $clue_available->clue = $found_clue->clue;
+                            $clue_available->timestamp_utc = time();
+                            $clue_available->save();
+                        }
+                    }
                 }
                 if ($square_should_have_across_clue){
                     $found_clue = false;
@@ -230,6 +263,7 @@ class Puzzle extends Model {
             );
         }else{
             $this->active = 1;
+            $this->timestamp_utc = time();
             $this->save();
             
             return array('success' => 1);
@@ -286,11 +320,11 @@ class Puzzle extends Model {
     public static function findSlug($name){
         $slug = strtolower(preg_replace("/[^a-zA-Z\d]/", "-", $name));
         $origslug = $slug;
-        $exists = Puzzle::where('slug', $slug)->first();
+        $exists = self::where('slug', $slug)->first();
         $i = 0;
         while ($exists){
             $slug = $origslug."-".$i++;
-            $exists = Puzzle::where('slug', $slug)->first();
+            $exists = self::where('slug', $slug)->first();
         }
         return $slug;
     }
@@ -298,18 +332,18 @@ class Puzzle extends Model {
     public static function getIncompletePuzzlesByUser($user){
         return self::leftjoin('puzzle_templates', 'puzzle_templates.id', '=', 'puzzles.puzzle_template_id')
             ->leftjoin('users', 'users.id', '=', 'puzzles.user_id')
-            ->select('puzzles.name', 'puzzles.slug', 'puzzles.timestamp_utc', 'puzzle_templates.width', 'puzzle_templates.height', 'users.name as owner', 'users.username')
+            ->selectRaw('puzzles.name, puzzles.slug, puzzles.timestamp_utc*1000 created, puzzle_templates.width, puzzle_templates.height, users.name as owner, users.username')
             ->where('puzzles.user_id', $user->id)
             ->whereNull('puzzles.deleted_timestamp_utc')
             ->where('puzzles.active', 0)->get();
     }
     
     public static function getPuzzles($limit){
-        return Puzzle::where('puzzles.active', 1)
+        return self::where('puzzles.active', 1)
             ->whereNull('puzzles.deleted_timestamp_utc')
             ->leftJoin('puzzle_templates', 'puzzle_templates.id', '=', 'puzzles.puzzle_template_id')
             ->leftJoin('users', 'users.id', '=', 'puzzles.user_id')
-            ->selectRaw('puzzles.name, puzzles.slug, users.name as owner, users.username, puzzle_templates.width, puzzle_templates.height, concat(from_unixtime(puzzles.timestamp_utc), \' GMT\') created')
+            ->selectRaw('puzzles.name, puzzles.slug, users.name as owner, users.username, puzzle_templates.width, puzzle_templates.height, puzzles.timestamp_utc*1000 created')
             ->orderBy('puzzles.timestamp_utc', 'desc')
             ->take($limit)
             ->get();

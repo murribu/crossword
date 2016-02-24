@@ -3,22 +3,24 @@
     <div class="contacts c-profile clearfix row">
         <div class="col-md-3 col-sm-6 col-xs-6" ng-repeat="t in pctrl.filterMyTemplates()">
             <div class="c-item">
-                <div class="abbr-puzzle-container">
-                    <div class="abbr-puzzle" style="{{pctrl.customStyle(t)}}">
-                        <div class="abbr-puzzle-row" ng-repeat="row in pctrl.range(1,t.height)">
-                            <div 
-                                ng-repeat="col in pctrl.range(1,t.width)"
-                                class="abbr-puzzle-square" 
-                                ng-class="{'black' : pctrl.isBlackSquare(t.slug, row, col)
-                                         , 'clue'  : pctrl.clueNumber(t.slug, row, col) > -1
-                                         , 'small' : t.width > 10}"
-                                data-clue-number="{{pctrl.clueNumber(t.slug, row, col) + 1}}"
-                                style="
-                                    left:{{(col-1)*100/t.width}}%;
-                                    width:{{100/t.width}}%;
-                                    top:{{(row-1)*100/t.height}}%;
-                                    height:{{100/t.height}}%;">
-                                
+                <div class="abbr-puzzle-outer-container">
+                    <div class="abbr-puzzle-container">
+                        <div class="abbr-puzzle" style="{{pctrl.customStyle(t)}}">
+                            <div class="abbr-puzzle-row" ng-repeat="row in pctrl.range(1,t.height)">
+                                <div 
+                                    ng-repeat="col in pctrl.range(1,t.width)"
+                                    class="abbr-puzzle-square" 
+                                    ng-class="{'black' : pctrl.isBlackSquare(t.slug, row, col)
+                                             , 'clue'  : pctrl.clueNumber(t.slug, row, col) > -1
+                                             , 'small' : t.width > 10}"
+                                    data-clue-number="{{pctrl.clueNumber(t.slug, row, col) + 1}}"
+                                    style="
+                                        left:{{(col-1)*100/t.width}}%;
+                                        width:{{100/t.width}}%;
+                                        top:{{(row-1)*100/t.height}}%;
+                                        height:{{100/t.height}}%;">
+                                    
+                                </div>
                             </div>
                         </div>
                     </div>

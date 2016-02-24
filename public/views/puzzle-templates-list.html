@@ -48,7 +48,7 @@
                         <td>{{pt.width}}</td>
                         <td>{{pt.height}}</td>
                         <td><a href="/users/{{pt.username}}">{{pt.owner}}</a></td>
-                        <td>{{pt.created}}</td>
+                        <td>{{pt.created | date:'MMM d, yyyy h:mm a'}}</td>
                     </tr>
                     <tr ng-hide="(ptctrl.puzzletemplates | filter:ptctrl.filterResults).length > 0"><td colspan="5">No results. Check your filters - You may be filtering all of them out.</td></tr>
                 </table>

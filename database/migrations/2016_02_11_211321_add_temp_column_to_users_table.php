@@ -14,7 +14,7 @@ class AddTempColumnToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->boolean('temporary')->default(0);
-            $table->string('most_recent_ip');
+            $table->string('most_recent_ip')->nullable();
         });
     }
 

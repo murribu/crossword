@@ -2,7 +2,7 @@
     <div class="profile-menu">
         <a href="" ng-style="mactrl.profileBgImage" toggle-submenu>
             <div class="profile-pic">
-                <img ng-show="profile.logged_in" src="{{profile.profile_image_url}}" alt="">
+                <img ng-show="profile.logged_in && profile.profile_image_url != ''" src="{{profile.profile_image_url}}" alt="">
             </div>
 
             <div class="profile-info" ng-show="profile.logged_in">
@@ -32,7 +32,6 @@
             <ul>
                 <li><a data-ui-sref-active="active" data-ui-sref="puzzles.my-incomplete-list" data-ng-click="mactrl.sidebarStat($event)" ng-show="profile.logged_in">My incomplete puzzles</a></li>
                 <li><a data-ui-sref-active="active" data-ui-sref="puzzles.list" data-ng-click="mactrl.sidebarStat($event)">List</a></li>
-                <li><a data-ui-sref-active="active" data-ui-sref="puzzles.new" data-ng-click="mactrl.sidebarStat($event)">+ New Puzzle </a></li>
             </ul>
         </li>
         <li class="sub-menu" data-ng-class="{ 'active toggled': mactrl.$state.includes('puzzle-templates') }">

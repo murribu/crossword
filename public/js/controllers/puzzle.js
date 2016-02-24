@@ -1,5 +1,5 @@
 materialAdmin
-    .controller('puzzleCtrl', function($scope, $location, $stateParams, $timeout, growlService, puzzleService) {
+    .controller('puzzleCtrl', function($scope, $location, $stateParams, $timeout, growlService, puzzleService, errorFactory) {
         var self = this;
         self.puzzle = {};
         self.puzzle.clues = {};
@@ -21,12 +21,6 @@ materialAdmin
         };
         
         puzzleService.getPuzzle($stateParams.puzzle_slug).success(function(d){
-            
-            if (d['errors'][e] == 'Please log in'){
-                $timeout(function(){
-                    $location.path('/');
-                },1000);
-            }
             self.puzzle = d;
             for(s in self.puzzle.clue_squares){
                 var row = parseInt(self.puzzle.clue_squares[s].split("-")[0]);
@@ -58,6 +52,8 @@ materialAdmin
                     };
                 }
             }
+        }).error(function(data, code){
+            errorFactory.handleErrors(data, code);
         });
         
         self.findClue = function(ordinal, direction){
@@ -97,26 +93,17 @@ materialAdmin
                 direction: self.selectedDirection,
             };
             puzzleService.saveClue(args).success(function(d){
-                if (d['errors']){
-                    for(e in d['errors']){
-                        growlService.growl('There was an error: ' + d['errors'][e], 'danger');
-                        if (d['errors'][e] == 'Please log in'){
-                            $timeout(function(){
-                                $location.path('/');
-                            },1000);
-                        }
-                    }
-                }else{
-                    var pad = "0000";
-                    var key = self.selectedClueOrdinal() + "";
-                    key = pad.substring(0, pad.length - key.length) + key;
-                    self.possibleClues[self.selectedDirection][key].clue = self.selectedClueText;
-                    for(c in self.puzzle.clues){
-                        if (self.puzzle.clues[c].ordinal == self.selectedClueOrdinal() && self.puzzle.clues[c].direction == self.selectedDirection){
-                            return self.puzzle.clues[c].clue;
-                        }
+                var pad = "0000";
+                var key = self.selectedClueOrdinal() + "";
+                key = pad.substring(0, pad.length - key.length) + key;
+                self.possibleClues[self.selectedDirection][key].clue = self.selectedClueText;
+                for(c in self.puzzle.clues){
+                    if (self.puzzle.clues[c].ordinal == self.selectedClueOrdinal() && self.puzzle.clues[c].direction == self.selectedDirection){
+                        return self.puzzle.clues[c].clue;
                     }
                 }
+            }).error(function(data, code){
+                errorFactory.handleErrors(data, code);
             });
         }
         
@@ -133,26 +120,18 @@ materialAdmin
                 if (!self.callingSuggestion){
                     self.callingSuggestion = true;
                     puzzleService.getPuzzleSquareSuggestion(self.puzzle.slug, self.selectedRow, self.selectedCol).success(function(d){
-                        if (d['errors']){
-                            for(e in d['errors']){
-                                growlService.growl('There was an error: ' + d['errors'][e], 'danger');
-                                if (d['errors'][e] == 'Please log in'){
-                                    $timeout(function(){
-                                        $location.path('/');
-                                    },1000);
-                                }
-                            }
+                        self.suggestions = d['suggestions'];
+                        self.word_count = d['word_count'];
+                        if (self.suggestions && self.suggestions.length > 1){
+                            self.total_suggestion_score = self.suggestions.reduce(function(a,b) { return (a['score'] ? a['score'] : a) + b['score']; });
+                        }else if (self.suggestions && self.suggestions.length == 1){
+                            self.total_suggestion_score = self.suggestions[0]['score'];
                         }else{
-                            self.suggestions = d['suggestions'];
-                            self.word_count = d['word_count'];
-                            if (self.suggestions && self.suggestions.length > 1){
-                                self.total_suggestion_score = self.suggestions.reduce(function(a,b) { return (a['score'] ? a['score'] : a) + b['score']; });
-                            }else if (self.suggestions && self.suggestions.length == 1){
-                                self.total_suggestion_score = self.suggestions[0]['score'];
-                            }else{
-                                self.total_suggestion_score = 0;
-                            }
+                            self.total_suggestion_score = 0;
                         }
+                    }).error(function(data, code){
+                        errorFactory.handleErrors(data, code);
+                    }).then(function(){
                         self.callingSuggestion = false;
                     });
                 }
@@ -166,19 +145,11 @@ materialAdmin
                 if (!self.callingProblem){
                     self.callingProblem = true;
                     puzzleService.getPuzzleProblemSquares(self.puzzle.slug).success(function(d){
-                        if (d['errors']){
-                            for(e in d['errors']){
-                                growlService.growl('There was an error: ' + d['errors'][e], 'danger');
-                                if (d['errors'][e] == 'Please log in'){
-                                    $timeout(function(){
-                                        $location.path('/');
-                                    },1000);
-                                }
-                            }
-                        }else{
-                            self.problems = d['problems'];
-                            self.impossibles = d['impossibles'];
-                        }
+                        self.problems = d['problems'];
+                        self.impossibles = d['impossibles'];
+                    }).error(function(data, code){
+                        errorFactory.handleErrors(data, code);
+                    }).then(function(){
                         self.callingProblem = false;
                     });
                 }
@@ -220,17 +191,10 @@ materialAdmin
                     letter: String.fromCharCode(e.keyCode),
                 };
                 puzzleService.setPuzzleSquare(sent).success(function(received){
-                    if (received['errors']){
-                        for(e in received['errors']){
-                            growlService.growl('There was an error: ' + received['errors'][e], 'danger');
-                            if (received['errors'][e] == 'Please log in'){
-                                $timeout(function(){
-                                    $location.path('/');
-                                },1000);
-                            }
-                        }
-                        self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
-                    }
+                    //Do nothing?
+                }).error(function(data, code){
+                    self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
+                    errorFactory.handleErrors(data, code);
                 });
                 self.moveNext();
             }else{
@@ -261,17 +225,10 @@ materialAdmin
                             letter: '',
                         };
                         puzzleService.setPuzzleSquare(sent).success(function(received){
-                            if (received['errors']){
-                                for(e in received['errors']){
-                                    growlService.growl('There was an error: ' + received['errors'][e], 'danger');
-                                    if (received['errors'][e] == 'Please log in'){
-                                        $timeout(function(){
-                                            $location.path('/');
-                                        },1000);
-                                    }
-                                }
-                                self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
-                            }
+                            //Do nothing?
+                        }).error(function(data, code){
+                            self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
+                            errorFactory.handleErrors(data, code);
                         });
                         if (self.selectedDirection == 'across'){
                             self.moveLeft();
@@ -289,17 +246,10 @@ materialAdmin
                             letter: '',
                         };
                         puzzleService.setPuzzleSquare(sent).success(function(received){
-                            if (received['errors']){
-                                for(e in received['errors']){
-                                    growlService.growl('There was an error: ' + received['errors'][e], 'danger');
-                                    if (received['errors'][e] == 'Please log in'){
-                                        $timeout(function(){
-                                            $location.path('/');
-                                        },1000);
-                                    }
-                                }
-                                self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
-                            }
+                            //Do nothing?
+                        }).error(function(data, code){
+                            self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
+                            errorFactory.handleErrors(data, code);
                         });
                         self.setFocusOnSelectedSquare();
                         break;

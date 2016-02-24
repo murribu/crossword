@@ -25,7 +25,9 @@ class PuzzleController extends Controller
     public function showIncompletePuzzles(){
         $user = Auth::user();
         if (!$user){
-            return array('errors' => array('Please log in'));
+            $msg = 'Please log in';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         $puzzles = Puzzle::getIncompletePuzzlesByUser($user);
         
@@ -35,10 +37,14 @@ class PuzzleController extends Controller
     public function postPuzzle(){
         $user = Auth::user();
         if (!$user){
-            return array('errors' => array('Please log in'));
+            $msg = 'Please log in';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         if (!Input::has('template_slug')){
-            return array('errors' => array('No puzzle template selected'));
+            $msg = 'No puzzle template selected';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         $p = new Puzzle;
 
@@ -53,29 +59,38 @@ class PuzzleController extends Controller
         if ($p->validate($args)){
             return Puzzle::create($args);
         }else{
-            abort('401', $p->errors());
+            $returnData = array('errors' => $p->errors());
+            return response()->json($returnData, 401);
         }
     }
     
     public function activatePuzzle(){
         $user = Auth::user();
         if (!$user){
-            return array('errors' => array('Please log in'));
+            $msg = 'Please log in';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         if (!Input::has('slug')){
-            return array('errors' => array('No puzzle selected'));
+            $msg = 'No puzzle selected';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         $p = Puzzle::findBySlug(Input::get('slug'));
         if ($p->user_id != $user->id){
-            return array('errors' => array('This is not your puzzle'));
+            $msg = 'This isn\'t your puzzle';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
-        return $p->activate();
+        return $p->activate($user);
     }
     
     public function getPuzzleForEdit($slug){
         $user = Auth::user();
         if (!$user){
-            return array('errors' => array('Please log in'));
+            $msg = 'Please log in';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         $p = Puzzle::with('clues')
             ->whereNull('puzzles.deleted_timestamp_utc')
@@ -84,7 +99,9 @@ class PuzzleController extends Controller
             ->first();
             
         if (!$p || $p->user_id != $user->id){
-            return array('errors' => array('Puzzle not available'));
+            $msg = 'Puzzle not available';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
 
         $p->clue_squares = $p->puzzle_template->clueSquares();
@@ -107,7 +124,9 @@ class PuzzleController extends Controller
             ->first();
         
         if (!$p){
-            return array('errors' => array('Puzzle not available'));
+            $returnData = array('errors' => array('Puzzle not available'));
+            return response()->json($returnData, 401);
+            //return array('errors' => array('Puzzle not available'));
         }
         
         $p->clue_squares = $p->puzzle_template->clueSquares();
@@ -142,7 +161,9 @@ class PuzzleController extends Controller
     public function postPuzzleTemplate(){
         $user = Auth::user();
         if (!$user){
-            return array('errors' => array('Please log in'));
+            $msg = 'Please log in';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         
         $pt = new PuzzleTemplate;
@@ -152,7 +173,8 @@ class PuzzleController extends Controller
         if ($pt->validate($args)){
             return PuzzleTemplate::create($args);
         }else{
-            abort('401', $pt->errors());
+            $returnData = array('errors' => $pt->errors());
+            return response()->json($returnData, 401);
         }
     }
     
@@ -169,7 +191,9 @@ class PuzzleController extends Controller
     public function postSquare(){
         $user = Auth::user();
         if (!$user){
-            return array('errors' => array('Please log in'));
+            $msg = 'Please log in';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         $args = Input::all();
         $args['user_id'] = $user->id;
@@ -182,12 +206,16 @@ class PuzzleController extends Controller
     public function getSuggestion($slug, $row, $col){
         $user = Auth::user();
         if (!$user){
-            return array('errors' => array('Please log in'));
+            $msg = 'Please log in';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         $p = Puzzle::findBySlug($slug);
         
         if ($p->user_id != $user->id){
-            return array('errors' => array('This isn\'t your puzzle'));
+            $msg = 'This isn\'t your puzzle';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         
         return PuzzleSquare::findSuggestion($p, $row, $col);
@@ -196,12 +224,16 @@ class PuzzleController extends Controller
     public function getProblemSquares($slug){
         $user = Auth::user();
         if (!$user){
-            return array('errors' => array('Please log in'));
+            $msg = 'Please log in';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         $p = Puzzle::findBySlug($slug);
         
         if ($p->user_id != $user->id){
-            return array('errors' => array('This isn\'t your puzzle'));
+            $msg = 'This isn\'t your puzzle';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         
         return $p->findProblemSquares();
@@ -210,15 +242,21 @@ class PuzzleController extends Controller
     public function postClue(){
         $user = Auth::user();
         if (!$user){
-            return array('errors' => array('Please log in'));
+            $msg = 'Please log in';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         if (!Input::has('puzzle_slug')){
-            return array('errors' => array('Invalid input: no puzzle slug'));
+            $msg = 'Invalid input: no puzzle slug';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 400);
         }
         $slug = Input::get('puzzle_slug');
         $p = Puzzle::findBySlug($slug);
         if ($user->id != $p->user_id){
-            return array('errors' => array('This is not your puzzle'));
+            $msg = 'This isn\'t your puzzle';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         $args = Input::all();
         
@@ -251,12 +289,16 @@ class PuzzleController extends Controller
     public function deletePuzzle($slug){
         $user = Auth::user();
         if (!$user){
-            return array('errors' => array('Please log in'));
+            $msg = 'Please log in';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         $p = Puzzle::findBySlug($slug);
         
         if ($p->user_id != $user->id){
-            return array('errors' => array('This isn\'t your puzzle'));
+            $msg = 'This isn\'t your puzzle';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         
         return $p->delete();
@@ -265,12 +307,16 @@ class PuzzleController extends Controller
     public function setName(){
         $user = Auth::user();
         if (!$user){
-            return array('errors' => array('Please log in'));
+            $msg = 'Please log in';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         $p = Puzzle::findBySlug(Input::get('puzzle_slug'));
         
         if ($p->user_id != $user->id){
-            return array('errors' => array('This isn\'t your puzzle'));
+            $msg = 'This isn\'t your puzzle';
+            $returnData = array('errors' => array($msg));
+            return response()->json($returnData, 401);
         }
         
         $p->name = Input::get('name');

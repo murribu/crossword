@@ -1,5 +1,5 @@
 materialAdmin
-    .controller('puzzleTemplatesCtrl', function($scope, puzzleService, growlService) {
+    .controller('puzzleTemplatesCtrl', function($scope, puzzleService, growlService, errorFactory) {
         var self = this;
         self.puzzletemplates = [];
         self.pageSize = 20;
@@ -13,6 +13,8 @@ materialAdmin
         
         puzzleService.getPuzzleTemplates().success(function(d){
             self.puzzletemplates = d;
+        }).error(function(data, code){
+            errorFactory.handleErrors(data, code);
         });
         
         self.changeSort = function(s){

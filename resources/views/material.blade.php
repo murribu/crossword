@@ -121,6 +121,7 @@
         <script src="js/controllers/dashboard.js"></script>
         <script src="js/controllers/table.js"></script>
         <script src="js/controllers/profile.js"></script>
+        <script src="js/controllers/puzzle.js"></script>
         <script src="js/controllers/puzzleEdit.js"></script>
         <script src="js/controllers/puzzleSolve.js"></script>
         <script src="js/controllers/puzzles.js"></script>
@@ -135,6 +136,9 @@
         <script src="js/services/profile.js"></script>
         <script src="js/services/puzzle.js"></script>
 
+        <!-- Factories -->
+        <script src="js/factories/error.js"></script>
+
         <!-- Filters -->
         <script src="js/filters/ordinal.js"></script>
         <script src="js/filters/startFrom.js"></script>
@@ -146,6 +150,24 @@
         <script src="js/modules/charts/other-charts.js"></script>
         <script src="js/modules/form.js"></script>
         <script src="js/modules/media.js"></script>
+        <script>
+            window.twttr = (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0],
+                t = window.twttr || {};
+                if (d.getElementById(id)) return t;
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "https://platform.twitter.com/widgets.js";
+                fjs.parentNode.insertBefore(js, fjs);
+
+                t._e = [];
+                t.ready = function(f) {
+                t._e.push(f);
+                };
+
+                return t;
+            }(document, "script", "twitter-wjs"));
+        </script>
     </body>
 </html>
 

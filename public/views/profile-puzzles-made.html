@@ -3,22 +3,24 @@
     <div class="contacts c-profile clearfix row">
         <div class="col-md-3 col-sm-6 col-xs-6" ng-repeat="p in pctrl.profile.puzzles">
             <div class="c-item">
-                <div class="abbr-puzzle-container">
-                    <div class="abbr-puzzle" style="{{pctrl.customStyle(pctrl.profile.templates[p.template_slug])}}">
-                        <div class="abbr-puzzle-row" ng-repeat="row in pctrl.range(1,pctrl.profile.templates[p.template_slug].height)">
-                            <div 
-                                ng-repeat="col in pctrl.range(1,pctrl.profile.templates[p.template_slug].width)"
-                                class="abbr-puzzle-square" 
-                                ng-class="{'black': pctrl.isBlackSquare(p.template_slug, row, col)
-                                         , 'clue' : pctrl.clueNumber(p.template_slug, row, col) > -1
-                                         , 'small' : pctrl.profile.templates[p.template_slug].width > 10}"
-                                data-clue-number="{{pctrl.clueNumber(p.template_slug, row, col) + 1}}"
-                                style="
-                                    left:{{(col-1)*100/pctrl.profile.templates[p.template_slug].width}}%;
-                                    width:{{100/pctrl.profile.templates[p.template_slug].width}}%;
-                                    top:{{(row-1)*100/pctrl.profile.templates[p.template_slug].height}}%;
-                                    height:{{100/pctrl.profile.templates[p.template_slug].height}}%;">
-                                
+                <div class="abbr-puzzle-outer-container">
+                    <div class="abbr-puzzle-container">
+                        <div class="abbr-puzzle" style="{{pctrl.customStyle(pctrl.profile.templates[p.template_slug])}}">
+                            <div class="abbr-puzzle-row" ng-repeat="row in pctrl.range(1,pctrl.profile.templates[p.template_slug].height)">
+                                <div 
+                                    ng-repeat="col in pctrl.range(1,pctrl.profile.templates[p.template_slug].width)"
+                                    class="abbr-puzzle-square" 
+                                    ng-class="{'black': pctrl.isBlackSquare(p.template_slug, row, col)
+                                             , 'clue' : pctrl.clueNumber(p.template_slug, row, col) > -1
+                                             , 'small' : pctrl.profile.templates[p.template_slug].width > 10}"
+                                    data-clue-number="{{pctrl.clueNumber(p.template_slug, row, col) + 1}}"
+                                    style="
+                                        left:{{(col-1)*100/pctrl.profile.templates[p.template_slug].width}}%;
+                                        width:{{100/pctrl.profile.templates[p.template_slug].width}}%;
+                                        top:{{(row-1)*100/pctrl.profile.templates[p.template_slug].height}}%;
+                                        height:{{100/pctrl.profile.templates[p.template_slug].height}}%;">
+                                    
+                                </div>
                             </div>
                         </div>
                     </div>

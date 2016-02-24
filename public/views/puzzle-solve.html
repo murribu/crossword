@@ -1,28 +1,22 @@
 <div class="container" data-ng-controller="puzzleSolveCtrl as pctrl" ng-keydown="pctrl.keyDown($event)">
-    <div class="card">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- Leaderboard Banner -->
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:728px;height:90px"
+         data-ad-client="ca-pub-5097355451130126"
+         data-ad-slot="9509891890"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <div class="card card-puzzle-solve">
         <div class="card-header" style="z-index:3">
             <h2>{{pctrl.puzzle.name}}</h2>
-            <div><small>template by <a href="#/users/{{pctrl.puzzle.puzzle_template.owner_username}}">{{pctrl.puzzle.puzzle_template.owner}}</a></small></div>
-            <div><small>puzzle by <a href="#/users/{{pctrl.puzzle.owner_username}}">{{pctrl.puzzle.owner}}</a></small></div>
+            <div class="label-template-by"><small>template by <a href="#/users/{{pctrl.puzzle.puzzle_template.owner_username}}">{{pctrl.puzzle.puzzle_template.owner}}</a></small></div>
+            <div class="label-puzzle-by"><small>puzzle by <a href="#/users/{{pctrl.puzzle.owner_username}}">{{pctrl.puzzle.owner}}</a></small></div>
         </div>
-        <div class="card-body" style="min-height:530px;">
-            <div class="puzzle-edit-clues-container">
-                <h3>Clues</h3>
-                <div>
-                    <h4>Across</h4>
-                    <div class="pointy" 
-                        ng-class="{'active' : pctrl.inSelectedWord(clue.start.row, clue.start.col) && pctrl.selectedDirection == 'across'}"
-                        ng-repeat="(key, clue) in pctrl.possibleClues.across" 
-                        ng-click="pctrl.clueClick(clue, 'across');">{{key | number}}. {{clue.clue}}</div>
-                    <h4>Down</h4>
-                    <div class="pointy" 
-                        ng-class="{'active' : pctrl.inSelectedWord(clue.start.row, clue.start.col) && pctrl.selectedDirection == 'down'}"
-                        ng-repeat="(key, clue) in pctrl.possibleClues.down" 
-                        ng-click="pctrl.clueClick(clue, 'down');">{{key | number}}. {{clue.clue}}</div>
-                </div>
-            </div>
+        <div class="card-body puzzle-card-body">
             <div class="puzzleContainer">
-                <div class="puzzle">
+                <div class="puzzle-solve">
                     <table>
                         <tr ng-repeat="row in pctrl.range(1,pctrl.puzzle.puzzle_template.height)" >
                             <td 
@@ -47,6 +41,30 @@
                 </div>
                 <div ng-show="pctrl.puzzle.solved == 1">SOLVED!</div>
             </div>
+            <div class="puzzle-edit-clues-container">
+                <h3>Clues</h3>
+                <div>
+                    <h4>Across</h4>
+                    <div class="pointy" 
+                        ng-class="{'active' : pctrl.inSelectedWord(clue.start.row, clue.start.col) && pctrl.selectedDirection == 'across'}"
+                        ng-repeat="(key, clue) in pctrl.possibleClues.across" 
+                        ng-click="pctrl.clueClick(clue, 'across');"
+                        data-clue-id="{{key | number}}across">{{key | number}}. {{clue.clue}}</div>
+                    <h4>Down</h4>
+                    <div class="pointy" 
+                        ng-class="{'active' : pctrl.inSelectedWord(clue.start.row, clue.start.col) && pctrl.selectedDirection == 'down'}"
+                        ng-repeat="(key, clue) in pctrl.possibleClues.down" 
+                        ng-click="pctrl.clueClick(clue, 'down');"
+                        data-clue-id="{{key | number}}down">{{key | number}}. {{clue.clue}}</div>
+                </div>
+            </div>
+        </div>
+        <div id="div-twitter-share" style="
+    position: absolute;
+    right: 10px;
+    bottom: 10px;">
+            <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=Try%20this%20crossword%20puzzle" data-size="large">.</a>
+            <link rel="canonical" href="http://rnkpd.com/#/puzzles/solve/{{pctrl.puzzle.slug}}">
         </div>
     </div>
 </div>

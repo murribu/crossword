@@ -175,7 +175,7 @@ class ActivateAPuzzleTest extends TestCase
             $clue = Clue::replace($args);
         }
         
-        $ret = $puzzle->activate();
+        $ret = $puzzle->activate($user);
         
         $this->assertEquals($puzzle->active, 0);
     }
@@ -339,7 +339,7 @@ class ActivateAPuzzleTest extends TestCase
             $clue = Clue::replace($args);
         }
         
-        $ret = $puzzle->activate();
+        $ret = $puzzle->activate($user);
         
         $this->assertEquals($puzzle->active, 0);
     }
@@ -507,7 +507,7 @@ class ActivateAPuzzleTest extends TestCase
             $clue = Clue::replace($args);
         }
         
-        $ret = $puzzle->activate();
+        $ret = $puzzle->activate($user);
         
         $this->assertEquals($puzzle->active, 1);
     }

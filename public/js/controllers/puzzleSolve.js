@@ -1,5 +1,5 @@
 materialAdmin
-    .controller('puzzleSolveCtrl', function($scope, $location, $stateParams, $timeout, growlService, puzzleService) {
+    .controller('puzzleSolveCtrl', function($scope, $location, $stateParams, $timeout, growlService, puzzleService, errorFactory) {
         var self = this;
         self.puzzle = {};
         self.puzzle.clues = {};
@@ -52,6 +52,11 @@ materialAdmin
                     };
                 }
             }
+            if (twttr.widgets){
+                twttr.widgets.load();
+            }
+        }).error(function(data, code){
+            errorFactory.handleErrors(data, code);
         });
         
         self.findClue = function(ordinal, direction){
@@ -102,21 +107,12 @@ materialAdmin
                     letter: String.fromCharCode(e.keyCode),
                 };
                 puzzleService.setPuzzleGuessSquare(sent).success(function(received){
-                    if (received['errors']){
-                        for(e in received['errors']){
-                            growlService.growl('There was an error: ' + received['errors'][e], 'danger');
-                            if (received['errors'][e] == 'Please log in'){
-                                $timeout(function(){
-                                    $location.path('/');
-                                },1000);
-                            }
-                        }
-                        self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
-                    }else{
-                        if (received['solved'] == 1){
-                            self.puzzle.solved = 1;
-                        }
+                    if (received['solved'] == 1){
+                        self.puzzle.solved = 1;
                     }
+                }).error(function(data, code){
+                    self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
+                    errorFactory.handleErrors(data, code);
                 });
                 self.moveNext();
             }else{
@@ -147,17 +143,10 @@ materialAdmin
                             letter: '',
                         };
                         puzzleService.setPuzzleGuessSquare(sent).success(function(received){
-                            if (received['errors']){
-                                for(e in received['errors']){
-                                    growlService.growl('There was an error: ' + received['errors'][e], 'danger');
-                                    if (received['errors'][e] == 'Please log in'){
-                                        $timeout(function(){
-                                            $location.path('/');
-                                        },1000);
-                                    }
-                                }
-                                self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
-                            }
+                            //Do nothing?
+                        }).error(function(data, code){
+                            self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
+                            errorFactory.handleErrors(data, code);
                         });
                         if (self.selectedDirection == 'across'){
                             self.moveLeft();
@@ -175,17 +164,10 @@ materialAdmin
                             letter: '',
                         };
                         puzzleService.setPuzzleGuessSquare(sent).success(function(received){
-                            if (received['errors']){
-                                for(e in received['errors']){
-                                    growlService.growl('There was an error: ' + received['errors'][e], 'danger');
-                                    if (received['errors'][e] == 'Please log in'){
-                                        $timeout(function(){
-                                            $location.path('/');
-                                        },1000);
-                                    }
-                                }
-                                self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
-                            }
+                            //Do nothing?
+                        }).error(function(data, code){
+                            self.puzzle.puzzle_squares[self.selectedRow + '-' + self.selectedCol].letter = oldLetter;
+                            errorFactory.handleErrors(data, code);
                         });
                         self.setFocusOnSelectedSquare();
                         break;
@@ -382,6 +364,15 @@ materialAdmin
             }
             self.selectedRow = row;
             self.selectedCol = col;
+            
+            var target = $('[data-clue-id=' + self.selectedClueOrdinal() + self.selectedDirection +']');
+            var container = $('.puzzle-edit-clues-container div');
+            if (target.length) {
+                $(container).animate({
+                    scrollTop: target.offset().top - container.offset().top
+                }, 1000);
+                return false;
+            }
         };
         
         self.selectedLetter = function(row, col){

@@ -23,7 +23,7 @@
                                     <tr data-ng-repeat="p in dctrl.puzzles">
                                         <td><a href="/#/puzzles/solve/{{p.slug}}">{{ p.name }}</a></td>
                                         <td>by <a href="/#/users/{{p.username}}">{{p.owner}}</a></td>
-                                        <td>{{p.created}}</td>
+                                        <td>{{p.created | date:'MMM d, yyyy h:mm a'}}</td>
                                     </tr>
                                 </tbody>
                             </table>

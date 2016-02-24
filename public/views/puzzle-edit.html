@@ -17,12 +17,14 @@
                     <div class="pointy" 
                         ng-class="{'active' : pctrl.inSelectedWord(clue.start.row, clue.start.col) && pctrl.selectedDirection == 'across'}"
                         ng-repeat="(key, clue) in pctrl.possibleClues.across" 
-                        ng-click="pctrl.clueClick(clue, 'across');">{{key | number}}. {{clue.clue}}</div>
+                        ng-click="pctrl.clueClick(clue, 'across');"
+                        data-clue-id="{{key | number}}across">{{key | number}}. {{clue.clue}}</div>
                     <h4>Down</h4>
                     <div class="pointy" 
                         ng-class="{'active' : pctrl.inSelectedWord(clue.start.row, clue.start.col) && pctrl.selectedDirection == 'down'}"
                         ng-repeat="(key, clue) in pctrl.possibleClues.down" 
-                        ng-click="pctrl.clueClick(clue, 'down');">{{key | number}}. {{clue.clue}}</div>
+                        ng-click="pctrl.clueClick(clue, 'down');"
+                        data-clue-id="{{key | number}}down">{{key | number}}. {{clue.clue}}</div>
                 </div>
             </div>
             <div class="puzzleContainer">

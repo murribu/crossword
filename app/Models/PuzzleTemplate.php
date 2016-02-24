@@ -8,7 +8,7 @@ class PuzzleTemplate extends Model {
 	protected $table = 'puzzle_templates';
 	public $timestamps = FALSE;
     
-    const SELECT_RAW = 'puzzle_templates.id, puzzle_templates.name, puzzle_templates.slug, puzzle_templates.symmetrical, width, height, users.name owner, users.username, concat(from_unixtime(puzzle_templates.timestamp_utc), \' GMT\')';
+    const SELECT_RAW = 'puzzle_templates.id, puzzle_templates.name, puzzle_templates.slug, puzzle_templates.symmetrical, width, height, users.name owner, users.username, puzzle_templates.timestamp_utc*1000 created';
     
     protected $rules = array(
         'name'      => 'required',
