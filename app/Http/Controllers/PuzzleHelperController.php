@@ -16,7 +16,11 @@ use App\Models\PuzzleTemplate;
 use App\Models\User;
 
 class PuzzleController extends Controller{
-    public function calculatePuzzleHelperSquares($puzzle){
-        return $puzzle->calculatePuzzleHelperSquares();
+    public static function calculatePuzzleHelperSquares(){
+    }
+    
+    public static function truncatePuzzleHelperSquares(){
+        DB::raw('truncate table puzzle_helper_square_options');
+        DB::raw('truncate table puzzle_helper_squares');
     }
 }
