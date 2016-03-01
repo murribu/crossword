@@ -137,6 +137,10 @@
     left: 5px;
     max-width: 60%;
 }
+.advert{
+    width: 100%;
+    text-align: center;
+}
 @media (max-width:550px){
     .puzzleContainer{
         position: relative;

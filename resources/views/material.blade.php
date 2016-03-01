@@ -23,8 +23,6 @@
 
     </head>
 
-    <body data-ng-class="{ 'sw-toggled': mactrl.layoutType === '1', 'modal-open': mactrl.sidebarToggle.left === true }">
-
         <data ui-view></data>
 
         <!-- Older IE warning message -->

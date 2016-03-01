@@ -275,6 +275,7 @@ class PuzzleController extends Controller
             $user->temporary = 1;
             $user->created_timestamp_utc = time();
             $user->updated_timestamp_utc = time();
+            $user->most_recent_ip = request()->ip();
             $user->save();
             Auth::login($user);
         }
